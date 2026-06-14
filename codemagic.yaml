@@ -4,24 +4,30 @@ workflows:
     environment:
       xcode: latest
     scripts:
+      - name: Generate Xcode project
+        script: |
+          brew list xcodegen &>/dev/null || brew install xcodegen
+          xcodegen generate
       - name: Build iOS app
         script: |
           xcodebuild build \
-            -project SalahCompanion/SalahCompanion.xcodeproj \
+            -project SalahCompanion.xcodeproj \
             -scheme SalahCompanion \
-            -configuration Release \
-            -sdk iphoneos \
+            -configuration Debug \
+            -sdk iphonesimulator \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
       - name: Run tests
         script: |
           xcodebuild test \
-            -project SalahCompanion/SalahCompanion.xcodeproj \
+            -project SalahCompanion.xcodeproj \
             -scheme SalahCompanion \
             -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 17'
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
     artifacts:
-      - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/*.app
     publishing:
       email:
         recipients:

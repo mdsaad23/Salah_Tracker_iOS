@@ -12,11 +12,14 @@ integration. Inspired by Nafs but original branding/design.
   `SalahCompanionTests/PrayerTimeServiceTests.swift`, design-token color
   assets + `Color+Palette.swift`, EN/AR `Localizable.xcstrings`, and the Home
   screen — date/Hijri header, `NextPrayerCard` live countdown, `PrayerRow`
-  list). The `.xcodeproj` itself still needs to be created in Xcode on macOS —
-  see [XCODE_SETUP.md](XCODE_SETUP.md), which also lists Adhan-swift API
-  points to verify once the package is linked. Next: complete that setup
-  (build, fix any Adhan API mismatches, run tests, check Home screen in
-  Simulator), then Phase 4.
+  list). The `.xcodeproj` is generated (not committed, see `.gitignore`) from
+  `project.yml` via [XcodeGen](https://github.com/yonaskolb/XcodeGen);
+  `codemagic.yaml` runs `xcodegen generate` then builds/tests on a macOS CI
+  runner. See [XCODE_SETUP.md](XCODE_SETUP.md) for the Adhan-swift API points
+  to verify once the package resolves, plus remaining one-time setup (real
+  App Group, Simulator check). Next: get a green Codemagic build (fix any
+  Adhan API mismatches, run tests), check Home screen in Simulator, then
+  Phase 4.
 
 ## Working Principles
 (Adapted from Karpathy's CLAUDE.md guidelines; use judgment on trivial tasks.)

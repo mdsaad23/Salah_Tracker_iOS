@@ -1,0 +1,55 @@
+# XcodeGen spec - generates SalahCompanion.xcodeproj at the repo root.
+# This repo is developed on Windows (no Xcode), so the .xcodeproj is not
+# committed (.gitignore: *.xcodeproj/) - Codemagic runs `xcodegen generate`
+# from this file before building. To regenerate locally on macOS:
+#   brew install xcodegen && xcodegen generate
+name: SalahCompanion
+options:
+  bundleIdPrefix: com.example.salahcompanion
+  deploymentTarget:
+    iOS: "26.0"
+
+targets:
+  SalahCompanion:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: SalahCompanion/Core
+      - path: SalahCompanion/Features
+      - path: SalahCompanion/Resources
+      - path: SalahCompanion/SalahCompanionApp.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.salahcompanion
+        INFOPLIST_FILE: SalahCompanion/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: SalahCompanion/SalahCompanion.entitlements
+    dependencies:
+      - package: Adhan
+
+  SalahCompanionTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: SalahCompanionTests
+    dependencies:
+      - target: SalahCompanion
+      - package: Adhan
+
+packages:
+  Adhan:
+    url: https://github.com/batoulapps/Adhan-swift
+    from: 1.4.0
+
+schemes:
+  SalahCompanion:
+    build:
+      targets:
+        SalahCompanion: all
+        SalahCompanionTests: [test]
+    test:
+      targets:
+        - SalahCompanionTests
+    run:
+      config: Debug
