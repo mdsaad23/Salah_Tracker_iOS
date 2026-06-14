@@ -42,12 +42,13 @@ workflows:
           xcrun simctl launch "$UDID" "$BUNDLE_ID"
           sleep 10
 
-          mkdir -p screenshots
-          xcrun simctl io "$UDID" screenshot screenshots/home_light.png
+          SCREENSHOT_DIR="$(pwd)/screenshots"
+          mkdir -p "$SCREENSHOT_DIR"
+          xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/home_light.png"
 
           xcrun simctl ui "$UDID" appearance dark
           sleep 2
-          xcrun simctl io "$UDID" screenshot screenshots/home_dark.png
+          xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/home_dark.png"
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/*.app
       - screenshots/*.png
