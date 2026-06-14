@@ -33,12 +33,14 @@ workflows:
           UDID=$(xcrun simctl list devices available | grep "iPhone 17" | head -1 | grep -oE '[0-9A-F-]{36}')
           xcrun simctl bootstatus "$UDID" -b
 
-          # Mecca - stable, theme-appropriate location for the screenshot.
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -path "*Debug-iphonesimulator/SalahCompanion.app" | head -1)
+          xcrun simctl install "$UDID" "$APP_PATH"
+
+          # Grant location access (after install, so the TCC entry binds to the
+          # installed app) and set a stable, theme-appropriate location - Mecca.
           xcrun simctl privacy "$UDID" grant location "$BUNDLE_ID"
           xcrun simctl location "$UDID" set 21.4225,39.8262
 
-          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -path "*Debug-iphonesimulator/SalahCompanion.app" | head -1)
-          xcrun simctl install "$UDID" "$APP_PATH"
           xcrun simctl launch "$UDID" "$BUNDLE_ID"
           sleep 10
 
