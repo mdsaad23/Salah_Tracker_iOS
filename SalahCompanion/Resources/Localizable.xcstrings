@@ -1,6 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld° from North" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld° من الشمال"
+          }
+        }
+      }
+    },
+    "All prayers logged for today" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم تسجيل جميع الصلوات لهذا اليوم"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح"
+          }
+        }
+      }
+    },
     "Current Location" : {
       "localizations" : {
         "ar" : {
@@ -13,6 +43,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Current Location"
+          }
+        }
+      }
+    },
+    "Detecting heading…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تحديد الاتجاه…"
+          }
+        }
+      }
+    },
+    "Facing the Qibla" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنت تواجه القبلة"
+          }
+        }
+      }
+    },
+    "Find the Kaaba" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديد اتجاه الكعبة"
+          }
+        }
+      }
+    },
+    "Habit Consistency" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاستمرارية"
+          }
+        }
+      }
+    },
+    "Last %lld Weeks" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر %lld أسابيع"
+          }
+        }
+      }
+    },
+    "Less" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقل"
           }
         }
       }
@@ -33,6 +123,36 @@
         }
       }
     },
+    "Location needed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الموقع مطلوب"
+          }
+        }
+      }
+    },
+    "Missed" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فائتة"
+          }
+        }
+      }
+    },
+    "Move your phone in a figure-8 to calibrate the compass." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حرّك هاتفك على شكل الرقم 8 لمعايرة البوصلة."
+          }
+        }
+      }
+    },
     "Next Prayer" : {
       "localizations" : {
         "ar" : {
@@ -49,6 +169,16 @@
         }
       }
     },
+    "Next: %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التالية: %@"
+          }
+        }
+      }
+    },
     "Open Settings" : {
       "localizations" : {
         "ar" : {
@@ -61,6 +191,96 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Settings"
+          }
+        }
+      }
+    },
+    "Prayed late" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صُلِّيت متأخرة"
+          }
+        }
+      }
+    },
+    "Prayed on time" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صُلِّيت في وقتها"
+          }
+        }
+      }
+    },
+    "prayed this week" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صلوات هذا الأسبوع"
+          }
+        }
+      }
+    },
+    "Qibla Direction" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتجاه القبلة"
+          }
+        }
+      }
+    },
+    "remaining" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متبقٍ"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكثر"
+          }
+        }
+      }
+    },
+    "Set a location on the Home screen to find the Qibla." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدد موقعًا من الشاشة الرئيسية لإيجاد اتجاه القبلة."
+          }
+        }
+      }
+    },
+    "Streak & calendar" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التتابع والتقويم"
+          }
+        }
+      }
+    },
+    "day streak" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أيام متتالية"
           }
         }
       }
@@ -93,6 +313,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Try Again"
+          }
+        }
+      }
+    },
+    "Turn left" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتجه يسارًا"
+          }
+        }
+      }
+    },
+    "Turn right" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اتجه يمينًا"
           }
         }
       }

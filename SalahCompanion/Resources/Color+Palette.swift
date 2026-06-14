@@ -25,4 +25,11 @@ extension Color {
     /// Fixed light text/icon color for content drawn on the always-emerald
     /// `appPrimary` surfaces, regardless of light/dark mode.
     static let appTextOnPrimary = Color("TextOnPrimary")
+
+    /// Muted clay rose — marks a missed prayer. A warm red that sits with the
+    /// emerald/cream/gold palette rather than a clinical alert red.
+    static let appMissed = Color("MissedRose")
+
+    /// Warm amber — marks the upcoming/next prayer (ring + center dot).
+    static let appUpcoming = Color("UpcomingAmber")
 }

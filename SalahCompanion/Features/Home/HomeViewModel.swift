@@ -32,6 +32,7 @@ final class HomeViewModel {
         do {
             let resolved = try await resolveLocation(using: settings)
             resolvedLocationName = resolved.name
+            persistResolvedLocation(resolved, into: settings)
 
             let (today, tomorrow) = try prayerTimeService.schedule(
                 around: .now,
@@ -59,6 +60,19 @@ final class HomeViewModel {
         return prayerTimeService.nextPrayer(
             after: date, today: today, tomorrow: tomorrow, trackedPrayers: trackedPrayers
         )
+    }
+
+    /// Captures the last-resolved automatic location back into `UserSettings`
+    /// so it persists (and is available to the widget/App Intents extensions)
+    /// even when GPS is later unavailable. Manual locations are already stored.
+    private func persistResolvedLocation(_ resolved: ResolvedLocation, into settings: UserSettings) {
+        guard settings.locationMode == .automatic else { return }
+        settings.latitude = resolved.latitude
+        settings.longitude = resolved.longitude
+        settings.timeZoneIdentifier = resolved.timeZone.identifier
+        if !resolved.name.isEmpty {
+            settings.locationName = resolved.name
+        }
     }
 
     private func resolveLocation(using settings: UserSettings) async throws -> ResolvedLocation {

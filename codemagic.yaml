@@ -26,7 +26,7 @@ workflows:
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
-      - name: Capture Home screen screenshots
+      - name: Capture screenshots of all screens
         ignore_failure: true
         script: |
           BUNDLE_ID="com.example.salahcompanion"
@@ -38,19 +38,32 @@ workflows:
 
           # Grant location access (after install, so the TCC entry binds to the
           # installed app) and set a stable, theme-appropriate location - Mecca.
+          # The app also seeds a manual Makkah location below, so screenshots are
+          # deterministic even without GPS.
           xcrun simctl privacy "$UDID" grant location "$BUNDLE_ID"
           xcrun simctl location "$UDID" set 21.4225,39.8262
 
-          xcrun simctl launch "$UDID" "$BUNDLE_ID"
-          sleep 10
-
           SCREENSHOT_DIR="$(pwd)/screenshots"
           mkdir -p "$SCREENSHOT_DIR"
-          xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/home_light.png"
 
-          xcrun simctl ui "$UDID" appearance dark
-          sleep 2
-          xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/home_dark.png"
+          # Launch into a given screen (-UITestSeed seeds deterministic prayer
+          # logs on first run) and capture it in both light and dark appearance.
+          shoot() {
+            screen="$1"; name="$2"
+            xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE_ID" \
+              -UITestSeed YES -UITestScreen "$screen"
+            sleep 6
+            xcrun simctl ui "$UDID" appearance light
+            sleep 1
+            xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/${name}_light.png"
+            xcrun simctl ui "$UDID" appearance dark
+            sleep 1
+            xcrun simctl io "$UDID" screenshot "$SCREENSHOT_DIR/${name}_dark.png"
+          }
+
+          shoot home home
+          shoot consistency consistency
+          shoot qibla qibla
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/*.app
       - screenshots/*.png
