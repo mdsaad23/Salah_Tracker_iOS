@@ -37,6 +37,9 @@ targets:
     deploymentTarget: "26.0"
     sources:
       - path: SalahCompanionTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: SalahCompanion
       - package: Adhan
