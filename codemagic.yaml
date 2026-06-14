@@ -2,20 +2,12 @@ workflows:
   ios-workflow:
     name: Salah Companion iOS Build
     environment:
-      ios_signing:
-        provisioning_profiles:
-          - name: match_profiles
       xcode: latest
-      cocoapods: default
     scripts:
-      - name: Install dependencies
-        script: |
-          cd SalahCompanion
-          pod install --repo-update || true
       - name: Build iOS app
         script: |
           xcodebuild build \
-            -workspace SalahCompanion/SalahCompanion.xcworkspace \
+            -project SalahCompanion/SalahCompanion.xcodeproj \
             -scheme SalahCompanion \
             -configuration Release \
             -sdk iphoneos \
@@ -24,11 +16,11 @@ workflows:
       - name: Run tests
         script: |
           xcodebuild test \
-            -workspace SalahCompanion/SalahCompanion.xcworkspace \
+            -project SalahCompanion/SalahCompanion.xcodeproj \
             -scheme SalahCompanion \
-            -configuration Debug
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17'
     artifacts:
-      - build/ios/iphoneos/*.app
       - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
     publishing:
       email:
