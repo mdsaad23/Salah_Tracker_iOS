@@ -1,0 +1,28 @@
+import SwiftUI
+
+/// Typed accessors for the design tokens defined in
+/// `Resources/Assets.xcassets` (see `salah-companion` skill for the palette).
+extension Color {
+    /// Deep emerald — headers, primary buttons, hero card background.
+    static let appPrimary = Color("PrimaryEmerald")
+
+    /// Sage/teal accent — secondary surfaces and gradients.
+    static let appPrimaryLight = Color("PrimaryLight")
+
+    /// Muted gold — used sparingly: next-prayer highlight, streak badges,
+    /// Qibla marker. Never as a large fill.
+    static let appAccent = Color("AccentGold")
+
+    /// Base screen background. Warm cream in light mode, near-black in dark.
+    static let appBackground = Color("BackgroundPrimary")
+
+    /// Primary body text. Charcoal in light mode, cream in dark.
+    static let appTextPrimary = Color("TextPrimary")
+
+    /// Secondary/muted text, e.g. captions and Arabic prayer names.
+    static let appTextSecondary = Color("TextSecondary")
+
+    /// Fixed light text/icon color for content drawn on the always-emerald
+    /// `appPrimary` surfaces, regardless of light/dark mode.
+    static let appTextOnPrimary = Color("TextOnPrimary")
+}

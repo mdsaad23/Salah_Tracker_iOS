@@ -1,0 +1,39 @@
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace/
+xcuserdata/
+*.xcuserstate
+*.DS_Store
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.build/
+.swiftpm/
+*.xcodeproj/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.ipa
+*.app
+*.dSYM.zip
+*.dSYM
+
+# Test artifacts
+*.coverage
