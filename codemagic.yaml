@@ -26,8 +26,31 @@ workflows:
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
+      - name: Capture Home screen screenshots
+        ignore_failure: true
+        script: |
+          BUNDLE_ID="com.example.salahcompanion"
+          UDID=$(xcrun simctl list devices available | grep "iPhone 17" | head -1 | grep -oE '[0-9A-F-]{36}')
+          xcrun simctl bootstatus "$UDID" -b
+
+          # Mecca - stable, theme-appropriate location for the screenshot.
+          xcrun simctl privacy "$UDID" grant location "$BUNDLE_ID"
+          xcrun simctl location "$UDID" set 21.4225,39.8262
+
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -path "*Debug-iphonesimulator/SalahCompanion.app" | head -1)
+          xcrun simctl install "$UDID" "$APP_PATH"
+          xcrun simctl launch "$UDID" "$BUNDLE_ID"
+          sleep 10
+
+          mkdir -p screenshots
+          xcrun simctl io "$UDID" screenshot screenshots/home_light.png
+
+          xcrun simctl ui "$UDID" appearance dark
+          sleep 2
+          xcrun simctl io "$UDID" screenshot screenshots/home_dark.png
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/*.app
+      - screenshots/*.png
     publishing:
       email:
         recipients:
