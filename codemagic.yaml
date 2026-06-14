@@ -1,0 +1,39 @@
+workflows:
+  ios-workflow:
+    name: Salah Companion iOS Build
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - name: match_profiles
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd SalahCompanion
+          pod install --repo-update || true
+      - name: Build iOS app
+        script: |
+          xcodebuild build \
+            -workspace SalahCompanion/SalahCompanion.xcworkspace \
+            -scheme SalahCompanion \
+            -configuration Release \
+            -sdk iphoneos \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+      - name: Run tests
+        script: |
+          xcodebuild test \
+            -workspace SalahCompanion/SalahCompanion.xcworkspace \
+            -scheme SalahCompanion \
+            -configuration Debug
+    artifacts:
+      - build/ios/iphoneos/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/Release-iphoneos/*.app
+    publishing:
+      email:
+        recipients:
+          - justsaad95@gmail.com
+        notify:
+          success: true
+          failure: true
