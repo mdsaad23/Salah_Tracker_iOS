@@ -8,18 +8,41 @@ description: Design tokens and domain reference (color palette, typography, layo
 ## Design Tokens
 
 ### Colors
-- Primary (deep emerald): `#1F3D2E` — headers, primary buttons, hero card background
-- Primary light (sage/teal accent): `#2E5945` — secondary surfaces, gradients
+- Primary (deep emerald): `#1F3D2E` — headers, primary buttons, hero card
+  background. **Dark mode**: `#4F9E76` (bright jade) — `appPrimary` is used as
+  a *highlight* (icon tints, progress rings, strokes, the `.prayed` circle
+  fill) far more often than as a large fill, so it must invert to a light
+  tone in dark mode or it disappears against the near-black background/card
+  surface. See "Adaptive highlight colors" below.
+- Primary light (sage/teal accent): `#2E5945` — secondary surfaces, gradients.
+  **Dark mode**: `#6FBE96` (lighter jade), keeping the same relative
+  lightness step above `appPrimary`.
 - Background (pale mint/sage): `#E7F2EC` — base background, light mode
 - Card surface (`appCardSurface`): `#FCFEFD` — elevated cards/panels, near-white
   against the mint background. Inset panels *within* a card (e.g. the "next
   prayer" pill, the Qibla dial face) reuse `appBackground` for a two-tone look.
 - Accent (muted gold): `#C9A24B` — used **sparingly only**: streak badges. Never
-  as a large fill.
+  as a large fill. Already has good contrast on dark backgrounds, so no dark
+  variant needed.
 - Text primary: near-black/charcoal `#1C1C1A`
 - Text secondary / muted: soft grey `#8A8F87`
 - Dark mode: invert — near-black background `#12201A`, card surface `#1C2E25`,
   cream text `#F5F1E8`, same gold accent
+
+### Adaptive highlight colors (light-on-dark / dark-on-light)
+- General rule: any color used to draw a **highlight on top of a background or
+  card surface** (icon tints, progress-ring strokes, badge fills, focal-element
+  glows) must be a *dark* tone in light mode and a *light* tone in dark mode —
+  never the same near-black/near-white tone in both, or it blends into the
+  surface beneath it.
+- `appPrimary`/`appPrimaryLight`, `appMissed`, and `appUpcoming` all follow this
+  via dark-appearance variants in their `.colorset`s — always reference them
+  through `Color.appPrimary` etc. (never hardcode hex) so new UI inherits the
+  adaptive behavior automatically.
+- When adding a *new* highlight color, give its `.colorset` a `luminosity: dark`
+  appearance variant that's noticeably lighter (roughly 4-5:1 contrast against
+  `appCardSurface` dark `#1C2E25`), the same way `MissedRose`
+  (`#C1684E` → `#D08468`) and `UpcomingAmber` (`#D98E3A` → `#E0A155`) do.
 
 ### Layout Pattern (Nafs-inspired)
 - Pill/capsule shapes for small interactive elements: location indicator,
