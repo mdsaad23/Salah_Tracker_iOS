@@ -145,9 +145,22 @@ struct PrayerTrackerCard: View {
         case .missed: return .missed
         case .notTracked, .none: break
         }
-        if next?.prayer == prayer { return .next }
-        if today.time(for: prayer) <= now { return .past }
+        if prayer == currentPeriodPrayer { return .next }
+        if today.time(for: prayer) <= now { return .missed }
         return .upcoming
+    }
+
+    /// The prayer whose time window contains `now` — the last tracked prayer
+    /// whose time has started, or the first prayer if none has started yet.
+    /// This is the prayer that should show the active ring+dot (unless it's
+    /// already logged as prayed, in which case it shows its prayed/missed fill
+    /// instead and no other circle becomes active).
+    private var currentPeriodPrayer: Prayer? {
+        var current = trackedPrayers.first
+        for prayer in trackedPrayers where today.time(for: prayer) <= now {
+            current = prayer
+        }
+        return current
     }
 
     private var logDialogPresented: Binding<Bool> {

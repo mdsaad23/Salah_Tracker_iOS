@@ -41,6 +41,16 @@
         }
       }
     },
+    "Done" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم"
+          }
+        }
+      }
+    },
     "Current Location" : {
       "localizations" : {
         "ar" : {
@@ -103,16 +113,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "الاستمرارية"
-          }
-        }
-      }
-    },
-    "Last %lld Weeks" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "آخر %lld أسابيع"
           }
         }
       }
@@ -251,6 +251,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "متبقٍ"
+          }
+        }
+      }
+    },
+    "Select Month" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر الشهر"
           }
         }
       }

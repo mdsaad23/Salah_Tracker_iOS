@@ -122,11 +122,7 @@ struct HomeView: View {
     private func quickLinks(today: DailyPrayerTimes) -> some View {
         HStack(spacing: 12) {
             NavigationLink(value: Route.consistency) {
-                QuickLinkCard(
-                    systemImage: "chart.bar.fill",
-                    title: "Habit Consistency",
-                    subtitle: "Streak & calendar"
-                )
+                ConsistencyPreviewCard()
             }
 
             NavigationLink(value: Route.qibla(latitude: today.latitude, longitude: today.longitude)) {

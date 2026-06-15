@@ -30,7 +30,7 @@ struct QuickLinkCard: View {
                     .foregroundStyle(Color.appTextPrimary)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 104, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 128, alignment: .leading)
         .padding(16)
         .background(Color.appCardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))

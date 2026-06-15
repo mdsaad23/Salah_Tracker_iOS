@@ -1,16 +1,19 @@
 import SwiftData
 import SwiftUI
 
-/// Habit Consistency screen: a calendar of day cells, each ringed in
-/// proportion to how many tracked prayers were completed that day, plus
-/// current streak and this-week summary. Reads `PrayerLog` from the shared
-/// store.
+/// Habit Consistency screen: a month-at-a-time calendar of day cells, each
+/// ringed in proportion to how many tracked prayers were completed that day,
+/// plus current streak and this-week summary. Swipe left/right on the
+/// calendar to change months, or tap the month label to jump via a date
+/// picker. Reads `PrayerLog` from the shared store.
 struct ConsistencyView: View {
     @Query private var logs: [PrayerLog]
     @Query private var settingsList: [UserSettings]
 
-    /// How many past weeks of cells to display.
-    private let weeksToShow = 12
+    @State private var displayedMonth = Calendar.current.dateInterval(of: .month, for: .now)?.start ?? .now
+    @State private var showMonthPicker = false
+    @State private var pickerDate = Date.now
+
     private let calendar = Calendar.current
 
     var body: some View {
@@ -25,6 +28,9 @@ struct ConsistencyView: View {
         .background(Color.appBackground)
         .navigationTitle("Habit Consistency")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showMonthPicker) {
+            monthPickerSheet
+        }
     }
 
     // MARK: - Stats
@@ -72,17 +78,14 @@ struct ConsistencyView: View {
 
     private var calendarCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Last \(weeksToShow) Weeks")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color.appTextSecondary)
-
+            monthHeader
             weekdayHeader
 
             VStack(spacing: 10) {
-                ForEach(weeks, id: \.first) { week in
+                ForEach(monthWeeks.indices, id: \.self) { weekIndex in
                     HStack(spacing: 8) {
-                        ForEach(week, id: \.self) { day in
-                            dayCell(for: day)
+                        ForEach(monthWeeks[weekIndex].indices, id: \.self) { dayIndex in
+                            dayCell(for: monthWeeks[weekIndex][dayIndex])
                         }
                     }
                 }
@@ -93,6 +96,71 @@ struct ConsistencyView: View {
         .background(Color.appCardSurface)
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .shadow(color: Color.appPrimary.opacity(0.06), radius: 10, y: 4)
+        .gesture(
+            DragGesture(minimumDistance: 24)
+                .onEnded { value in
+                    if value.translation.width <= -50 {
+                        changeMonth(by: 1)
+                    } else if value.translation.width >= 50 {
+                        changeMonth(by: -1)
+                    }
+                }
+        )
+    }
+
+    private var monthHeader: some View {
+        HStack {
+            monthStepButton(systemImage: "chevron.left") { changeMonth(by: -1) }
+
+            Spacer()
+
+            Button {
+                pickerDate = displayedMonth
+                showMonthPicker = true
+            } label: {
+                Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.appTextPrimary)
+            }
+
+            Spacer()
+
+            monthStepButton(systemImage: "chevron.right") { changeMonth(by: 1) }
+        }
+    }
+
+    private func monthStepButton(systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.appPrimary)
+                .frame(width: 32, height: 32)
+                .background(Color.appBackground)
+                .clipShape(Circle())
+        }
+    }
+
+    private var monthPickerSheet: some View {
+        NavigationStack {
+            DatePicker(
+                "Select Month",
+                selection: $pickerDate,
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .padding()
+            .navigationTitle("Select Month")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        displayedMonth = calendar.dateInterval(of: .month, for: pickerDate)?.start ?? pickerDate
+                        showMonthPicker = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 
     private var weekdayHeader: some View {
@@ -108,30 +176,37 @@ struct ConsistencyView: View {
 
     /// One calendar cell: the day's number inside a ring filled in proportion
     /// to that day's completed prayers, with today highlighted by a soft fill.
+    /// `nil` renders an empty cell, used to pad the grid to full weeks.
     @ViewBuilder
-    private func dayCell(for day: Date) -> some View {
-        let isFuture = day > today
-        let isToday = calendar.isDate(day, inSameDayAs: today)
-        let progress = isFuture ? 0 : min(Double(prayedCount(on: day)) / Double(denominator), 1)
+    private func dayCell(for day: Date?) -> some View {
+        if let day {
+            let isFuture = day > today
+            let isToday = calendar.isDate(day, inSameDayAs: today)
+            let progress = isFuture ? 0 : min(Double(prayedCount(on: day)) / Double(denominator), 1)
 
-        ZStack {
-            Circle()
-                .fill(isToday ? Color.appPrimary.opacity(0.12) : Color.clear)
-            Circle()
-                .strokeBorder(Color.appTextSecondary.opacity(0.15), lineWidth: 3)
-            if progress > 0 {
+            ZStack {
                 Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(Color.appPrimary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+                    .fill(isToday ? Color.appPrimary.opacity(0.12) : Color.clear)
+                Circle()
+                    .strokeBorder(Color.appTextSecondary.opacity(0.15), lineWidth: 3)
+                if progress > 0 {
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(Color.appPrimary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                }
+                Text("\(calendar.component(.day, from: day))")
+                    .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
+                    .foregroundStyle(isFuture ? Color.appTextSecondary.opacity(0.4) : Color.appTextPrimary)
             }
-            Text("\(calendar.component(.day, from: day))")
-                .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
-                .foregroundStyle(isFuture ? Color.appTextSecondary.opacity(0.4) : Color.appTextPrimary)
+            .frame(maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fit)
+            .padding(2)
+        } else {
+            Color.clear
+                .frame(maxWidth: .infinity)
+                .aspectRatio(1, contentMode: .fit)
         }
-        .frame(maxWidth: .infinity)
-        .aspectRatio(1, contentMode: .fit)
-        .padding(2)
     }
 
     // MARK: - Derived data
@@ -158,20 +233,36 @@ struct ConsistencyView: View {
         prayedByDay[calendar.startOfDay(for: day)] ?? 0
     }
 
-    /// Weeks (oldest first), each an array of 7 days aligned to the calendar's
-    /// first weekday, ending with the current week.
-    private var weeks: [[Date]] {
-        let weekday = calendar.component(.weekday, from: today)
-        let offsetIntoWeek = (weekday - calendar.firstWeekday + 7) % 7
+    /// The days of `displayedMonth`, padded with leading/trailing `nil`s so
+    /// the grid aligns to the calendar's first weekday and forms full weeks.
+    private var monthDays: [Date?] {
         guard
-            let currentWeekStart = calendar.date(byAdding: .day, value: -offsetIntoWeek, to: today),
-            let firstWeekStart = calendar.date(byAdding: .day, value: -7 * (weeksToShow - 1), to: currentWeekStart)
+            let monthInterval = calendar.dateInterval(of: .month, for: displayedMonth),
+            let dayRange = calendar.range(of: .day, in: .month, for: displayedMonth)
         else { return [] }
 
-        return (0..<weeksToShow).compactMap { weekIndex in
-            guard let weekStart = calendar.date(byAdding: .day, value: 7 * weekIndex, to: firstWeekStart)
-            else { return nil }
-            return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: weekStart) }
+        let firstOfMonth = monthInterval.start
+        let weekday = calendar.component(.weekday, from: firstOfMonth)
+        let leadingEmpty = (weekday - calendar.firstWeekday + 7) % 7
+
+        var days: [Date?] = Array(repeating: nil, count: leadingEmpty)
+        days += dayRange.compactMap { calendar.date(byAdding: .day, value: $0 - 1, to: firstOfMonth) }
+        while days.count % 7 != 0 {
+            days.append(nil)
+        }
+        return days
+    }
+
+    private var monthWeeks: [[Date?]] {
+        stride(from: 0, to: monthDays.count, by: 7).map {
+            Array(monthDays[$0..<min($0 + 7, monthDays.count)])
+        }
+    }
+
+    private func changeMonth(by offset: Int) {
+        guard let newMonth = calendar.date(byAdding: .month, value: offset, to: displayedMonth) else { return }
+        withAnimation(.easeInOut(duration: 0.3)) {
+            displayedMonth = calendar.dateInterval(of: .month, for: newMonth)?.start ?? newMonth
         }
     }
 
@@ -199,9 +290,17 @@ struct ConsistencyView: View {
         return streak
     }
 
+    /// The current real-world week's days (oldest first) — independent of
+    /// whichever month is currently displayed in the calendar.
+    private var currentWeek: [Date] {
+        let weekday = calendar.component(.weekday, from: today)
+        let offset = (weekday - calendar.firstWeekday + 7) % 7
+        guard let weekStart = calendar.date(byAdding: .day, value: -offset, to: today) else { return [] }
+        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: weekStart) }
+    }
+
     private var prayedThisWeek: Int {
-        guard let week = weeks.last else { return 0 }
-        return week.reduce(0) { $0 + prayedCount(on: $1) }
+        currentWeek.reduce(0) { $0 + prayedCount(on: $1) }
     }
 }
 

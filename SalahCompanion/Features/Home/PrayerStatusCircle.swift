@@ -8,13 +8,11 @@ struct PrayerStatusCircle: View {
     enum State {
         /// Marked prayed (on time or late) — solid emerald fill with a check.
         case prayed
-        /// Marked missed — clay-rose fill with a cross.
+        /// Time has passed and it's unlogged — clay-rose fill with a cross.
         case missed
-        /// The upcoming/active prayer — soft glowing ring with a center dot.
+        /// The current/active prayer — soft glowing ring with a center dot.
         case next
-        /// Time has passed but it's unlogged — a hollow ring inviting a tap.
-        case past
-        /// Still in the future and not the next prayer — a quiet outline.
+        /// Still upcoming and not the active prayer — a quiet outline.
         case upcoming
     }
 
@@ -66,9 +64,6 @@ struct PrayerStatusCircle: View {
                     .frame(width: 12, height: 12)
                     .shadow(color: Color.appUpcoming.opacity(0.6), radius: 4)
 
-            case .past:
-                Circle().strokeBorder(Color.appTextSecondary.opacity(0.5), lineWidth: 2)
-
             case .upcoming:
                 Circle().strokeBorder(Color.appTextSecondary.opacity(0.25), lineWidth: 2)
             }
@@ -83,7 +78,7 @@ struct PrayerStatusCircle: View {
         switch state {
         case .prayed: Color.appPrimary.opacity(0.25)
         case .next: Color.appUpcoming.opacity(0.35)
-        case .missed, .past, .upcoming: .clear
+        case .missed, .upcoming: .clear
         }
     }
 
@@ -92,7 +87,7 @@ struct PrayerStatusCircle: View {
         case .prayed: Color.appPrimary
         case .missed: Color.appMissed
         case .next: Color.appUpcoming
-        case .past, .upcoming: Color.appTextPrimary
+        case .upcoming: Color.appTextPrimary
         }
     }
 }
@@ -102,7 +97,6 @@ struct PrayerStatusCircle: View {
         PrayerStatusCircle(prayer: .fajr, time: .now, state: .prayed)
         PrayerStatusCircle(prayer: .dhuhr, time: .now, state: .missed)
         PrayerStatusCircle(prayer: .asr, time: .now, state: .next)
-        PrayerStatusCircle(prayer: .maghrib, time: .now, state: .past)
         PrayerStatusCircle(prayer: .isha, time: .now, state: .upcoming)
     }
     .padding()

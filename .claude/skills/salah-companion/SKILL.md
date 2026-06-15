@@ -31,6 +31,21 @@ description: Design tokens and domain reference (color palette, typography, layo
 - Calendar/heatmap cells show the day number inside a progress ring (ring fill
   proportional to prayers completed that day), with today highlighted by a
   soft `appPrimary.opacity(0.12)` fill — not a plain dot grid.
+- Habit Consistency calendar shows **one month at a time** (`ConsistencyView`),
+  navigable by swiping left/right on the card or tapping the month/year label
+  to open a graphical date picker. Today's streak/this-week stats always reflect
+  the real current week, independent of the displayed month.
+- Home's Habit Consistency quick-link card (`ConsistencyPreviewCard`) shows a
+  row of 7 gradient dots for the current week: `appTextSecondary.opacity(0.15)`
+  (grey) for 0 prayers logged that day, scaling to a solid `appPrimary` fill at
+  all tracked prayers logged.
+- `PrayerStatusCircle.State` has 4 cases — `.prayed` (green fill + check),
+  `.missed` (clay-rose fill + cross — auto-applied once a prayer's time has
+  passed and it's unlogged, not just via the "Missed" dialog action), `.next`
+  (glowing ring + center dot — the *current* prayer period, i.e. the last
+  tracked prayer whose time has started, or the first prayer if none has
+  started yet, as long as it isn't already logged), and `.upcoming` (quiet
+  outline, time not yet reached and not the active one).
 
 ### Typography
 - One typeface family throughout (rounded/geometric sans, e.g. system font with
