@@ -10,7 +10,7 @@ struct PrayerStatusCircle: View {
         case prayed
         /// Marked missed — clay-rose fill with a cross.
         case missed
-        /// The upcoming/active prayer — amber ring with a center dot.
+        /// The upcoming/active prayer — soft glowing ring with a center dot.
         case next
         /// Time has passed but it's unlogged — a hollow ring inviting a tap.
         case past
@@ -22,7 +22,7 @@ struct PrayerStatusCircle: View {
     let time: Date
     let state: State
 
-    private let diameter: CGFloat = 46
+    private let diameter: CGFloat = 50
 
     var body: some View {
         VStack(spacing: 6) {
@@ -59,10 +59,12 @@ struct PrayerStatusCircle: View {
                     .foregroundStyle(Color.appTextOnPrimary)
 
             case .next:
+                Circle().fill(Color.appUpcoming.opacity(0.12))
                 Circle().strokeBorder(Color.appUpcoming, lineWidth: 3)
                 Circle()
                     .fill(Color.appUpcoming)
                     .frame(width: 12, height: 12)
+                    .shadow(color: Color.appUpcoming.opacity(0.6), radius: 4)
 
             case .past:
                 Circle().strokeBorder(Color.appTextSecondary.opacity(0.5), lineWidth: 2)
@@ -72,6 +74,17 @@ struct PrayerStatusCircle: View {
             }
         }
         .frame(width: diameter, height: diameter)
+        .shadow(color: glowColor, radius: state == .next || state == .prayed ? 8 : 0, y: 2)
+    }
+
+    /// Soft glow beneath the active and completed circles; other states cast
+    /// no shadow.
+    private var glowColor: Color {
+        switch state {
+        case .prayed: Color.appPrimary.opacity(0.25)
+        case .next: Color.appUpcoming.opacity(0.35)
+        case .missed, .past, .upcoming: .clear
+        }
     }
 
     private var labelColor: Color {

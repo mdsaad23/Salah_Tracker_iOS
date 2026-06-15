@@ -13,8 +13,13 @@ extension Color {
     /// Qibla marker. Never as a large fill.
     static let appAccent = Color("AccentGold")
 
-    /// Base screen background. Warm cream in light mode, near-black in dark.
+    /// Base screen background. Pale mint/sage in light mode, near-black in dark.
     static let appBackground = Color("BackgroundPrimary")
+
+    /// Elevated card/surface fill. Near-white in light mode, lifted dark green
+    /// in dark mode — sits above `appBackground` to create the two-tone
+    /// layering used for cards and their inset panels.
+    static let appCardSurface = Color("CardSurface")
 
     /// Primary body text. Charcoal in light mode, cream in dark.
     static let appTextPrimary = Color("TextPrimary")

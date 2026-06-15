@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ away" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "على بُعد %@"
+          }
+        }
+      }
+    },
     "%lld° from North" : {
       "localizations" : {
         "ar" : {
@@ -57,6 +67,16 @@
         }
       }
     },
+    "Facing %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متجه %@"
+          }
+        }
+      }
+    },
     "Facing the Qibla" : {
       "localizations" : {
         "ar" : {
@@ -93,16 +113,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "آخر %lld أسابيع"
-          }
-        }
-      }
-    },
-    "Less" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أقل"
           }
         }
       }
@@ -241,16 +251,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "متبقٍ"
-          }
-        }
-      }
-    },
-    "More" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أكثر"
           }
         }
       }

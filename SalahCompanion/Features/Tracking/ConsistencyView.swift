@@ -1,14 +1,15 @@
 import SwiftData
 import SwiftUI
 
-/// Habit Consistency screen: a dot heatmap of prayer completion (7 dots per
-/// row = one week, darker = more prayers prayed that day), plus current streak
-/// and this-week summary. Reads `PrayerLog` from the shared store.
+/// Habit Consistency screen: a calendar of day cells, each ringed in
+/// proportion to how many tracked prayers were completed that day, plus
+/// current streak and this-week summary. Reads `PrayerLog` from the shared
+/// store.
 struct ConsistencyView: View {
     @Query private var logs: [PrayerLog]
     @Query private var settingsList: [UserSettings]
 
-    /// How many past weeks of dots to display.
+    /// How many past weeks of cells to display.
     private let weeksToShow = 12
     private let calendar = Calendar.current
 
@@ -44,10 +45,15 @@ struct ConsistencyView: View {
     }
 
     private func statTile(value: String, unit: LocalizedStringKey, systemImage: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: systemImage)
-                .font(.title3)
-                .foregroundStyle(Color.appAccent)
+        VStack(alignment: .leading, spacing: 10) {
+            ZStack {
+                Circle().fill(Color.appAccent.opacity(0.15))
+                Image(systemName: systemImage)
+                    .font(.subheadline)
+                    .foregroundStyle(Color.appAccent)
+            }
+            .frame(width: 32, height: 32)
+
             Text(value)
                 .font(.system(size: 34, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.appTextPrimary)
@@ -57,11 +63,12 @@ struct ConsistencyView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.appPrimaryLight.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color.appCardSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.appPrimary.opacity(0.06), radius: 10, y: 4)
     }
 
-    // MARK: - Calendar heatmap
+    // MARK: - Calendar
 
     private var calendarCard: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -71,22 +78,21 @@ struct ConsistencyView: View {
 
             weekdayHeader
 
-            VStack(spacing: 8) {
+            VStack(spacing: 10) {
                 ForEach(weeks, id: \.first) { week in
                     HStack(spacing: 8) {
                         ForEach(week, id: \.self) { day in
-                            dot(for: day)
+                            dayCell(for: day)
                         }
                     }
                 }
             }
-
-            legend
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.appPrimaryLight.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color.appCardSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.appPrimary.opacity(0.06), radius: 10, y: 4)
     }
 
     private var weekdayHeader: some View {
@@ -100,34 +106,32 @@ struct ConsistencyView: View {
         }
     }
 
+    /// One calendar cell: the day's number inside a ring filled in proportion
+    /// to that day's completed prayers, with today highlighted by a soft fill.
     @ViewBuilder
-    private func dot(for day: Date) -> some View {
+    private func dayCell(for day: Date) -> some View {
         let isFuture = day > today
-        Circle()
-            .fill(isFuture ? Color.clear : color(forPrayed: prayedCount(on: day)))
-            .frame(maxWidth: .infinity)
-            .aspectRatio(1, contentMode: .fit)
-            .overlay {
-                if calendar.isDate(day, inSameDayAs: today) {
-                    Circle().strokeBorder(Color.appAccent, lineWidth: 2)
-                }
-            }
-    }
+        let isToday = calendar.isDate(day, inSameDayAs: today)
+        let progress = isFuture ? 0 : min(Double(prayedCount(on: day)) / Double(denominator), 1)
 
-    private var legend: some View {
-        HStack(spacing: 8) {
-            Text("Less")
-                .font(.caption2)
-                .foregroundStyle(Color.appTextSecondary)
-            ForEach(0...denominator, id: \.self) { count in
+        ZStack {
+            Circle()
+                .fill(isToday ? Color.appPrimary.opacity(0.12) : Color.clear)
+            Circle()
+                .strokeBorder(Color.appTextSecondary.opacity(0.15), lineWidth: 3)
+            if progress > 0 {
                 Circle()
-                    .fill(color(forPrayed: count))
-                    .frame(width: 12, height: 12)
+                    .trim(from: 0, to: progress)
+                    .stroke(Color.appPrimary, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
             }
-            Text("More")
-                .font(.caption2)
-                .foregroundStyle(Color.appTextSecondary)
+            Text("\(calendar.component(.day, from: day))")
+                .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
+                .foregroundStyle(isFuture ? Color.appTextSecondary.opacity(0.4) : Color.appTextPrimary)
         }
+        .frame(maxWidth: .infinity)
+        .aspectRatio(1, contentMode: .fit)
+        .padding(2)
     }
 
     // MARK: - Derived data
@@ -198,13 +202,6 @@ struct ConsistencyView: View {
     private var prayedThisWeek: Int {
         guard let week = weeks.last else { return 0 }
         return week.reduce(0) { $0 + prayedCount(on: $1) }
-    }
-
-    /// Gradient from a light tint (few) to solid emerald (all prayers prayed).
-    private func color(forPrayed count: Int) -> Color {
-        guard count > 0 else { return Color.appTextSecondary.opacity(0.15) }
-        let fraction = min(Double(count) / Double(denominator), 1)
-        return Color.appPrimary.opacity(0.3 + 0.7 * fraction)
     }
 }
 

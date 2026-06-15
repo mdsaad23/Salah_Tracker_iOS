@@ -141,26 +141,49 @@ struct HomeView: View {
     }
 
     private func header(settings: UserSettings) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(Date.now.formatted(date: .long, time: .omitted))
-                .font(.headline)
-                .foregroundStyle(Color.appTextPrimary)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(Date.now.formatted(date: .long, time: .omitted))
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Color.appTextPrimary)
 
-            Text(HijriDate.formatted(for: .now, offsetDays: settings.hijriDateOffsetDays))
-                .font(.subheadline)
-                .foregroundStyle(Color.appTextSecondary)
+                    Text(HijriDate.formatted(for: .now, offsetDays: settings.hijriDateOffsetDays))
+                        .font(.subheadline)
+                        .foregroundStyle(Color.appTextSecondary)
+                }
+
+                Spacer()
+
+                Button {
+                    Task { await viewModel.refresh(using: settings) }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Color.appPrimary)
+                        .frame(width: 40, height: 40)
+                        .background(Color.appCardSurface)
+                        .clipShape(Circle())
+                        .shadow(color: Color.appPrimary.opacity(0.06), radius: 8, y: 2)
+                }
+            }
 
             Button {
                 Task { await viewModel.refresh(using: settings) }
             } label: {
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
                     Image(systemName: "location.fill")
+                        .font(.caption)
                     Text(locationLabel(settings: settings))
+                        .font(.subheadline.weight(.medium))
                 }
-                .font(.subheadline)
                 .foregroundStyle(Color.appTextSecondary)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color.appCardSurface)
+                .clipShape(Capsule())
+                .shadow(color: Color.appPrimary.opacity(0.05), radius: 6, y: 2)
             }
-            .padding(.top, 4)
         }
     }
 

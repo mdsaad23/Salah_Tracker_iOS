@@ -10,13 +10,27 @@ description: Design tokens and domain reference (color palette, typography, layo
 ### Colors
 - Primary (deep emerald): `#1F3D2E` — headers, primary buttons, hero card background
 - Primary light (sage/teal accent): `#2E5945` — secondary surfaces, gradients
-- Background (warm cream): `#FAF8F3` — base background, light mode
-- Accent (muted gold): `#C9A24B` — used **sparingly only**: next-prayer highlight,
-  streak badges, Qibla marker. Never as a large fill.
+- Background (pale mint/sage): `#E7F2EC` — base background, light mode
+- Card surface (`appCardSurface`): `#FCFEFD` — elevated cards/panels, near-white
+  against the mint background. Inset panels *within* a card (e.g. the "next
+  prayer" pill, the Qibla dial face) reuse `appBackground` for a two-tone look.
+- Accent (muted gold): `#C9A24B` — used **sparingly only**: streak badges. Never
+  as a large fill.
 - Text primary: near-black/charcoal `#1C1C1A`
 - Text secondary / muted: soft grey `#8A8F87`
-- Dark mode: invert — near-black background `#12201A`, cream text `#F5F1E8`, same
-  gold accent
+- Dark mode: invert — near-black background `#12201A`, card surface `#1C2E25`,
+  cream text `#F5F1E8`, same gold accent
+
+### Layout Pattern (Nafs-inspired)
+- Pill/capsule shapes for small interactive elements: location indicator,
+  refresh button (circular), "facing X" badges.
+- Icon badges: small circular tinted-fill backgrounds (`appPrimary.opacity(0.1)`)
+  behind feature icons on quick-link tiles.
+- Soft glow shadows on focal elements (active prayer circle, Qibla marker) using
+  the element's own color at low opacity, not generic black shadows.
+- Calendar/heatmap cells show the day number inside a progress ring (ring fill
+  proportional to prayers completed that day), with today highlighted by a
+  soft `appPrimary.opacity(0.12)` fill — not a plain dot grid.
 
 ### Typography
 - One typeface family throughout (rounded/geometric sans, e.g. system font with

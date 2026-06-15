@@ -18,14 +18,13 @@ struct PrayerTrackerCard: View {
         VStack(alignment: .leading, spacing: 20) {
             header
             circleRow
-            Divider()
             nextPrayer
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.appPrimaryLight.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .shadow(color: Color.appPrimary.opacity(0.08), radius: 12, y: 4)
+        .background(Color.appCardSurface)
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .shadow(color: Color.appPrimary.opacity(0.08), radius: 16, y: 6)
         .confirmationDialog(
             selectedPrayer?.displayName ?? "",
             isPresented: logDialogPresented,
@@ -49,8 +48,12 @@ struct PrayerTrackerCard: View {
                 .foregroundStyle(Color.appTextPrimary)
             Spacer()
             Text("\(completedCount)/\(trackedPrayers.count)")
-                .font(.headline.monospacedDigit())
+                .font(.subheadline.weight(.semibold).monospacedDigit())
                 .foregroundStyle(Color.appPrimary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+                .background(Color.appPrimary.opacity(0.1))
+                .clipShape(Capsule())
         }
     }
 
@@ -80,31 +83,51 @@ struct PrayerTrackerCard: View {
             .padding(.top, 22) // ≈ circle radius, so it meets the circle centers
     }
 
+    @ViewBuilder
     private var nextPrayer: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if let next {
-                Text("Next: \(next.prayer.displayName)")
-                    .font(.title.weight(.bold))
-                    .foregroundStyle(Color.appPrimary)
-
-                HStack(spacing: 8) {
-                    Text(next.time, style: .time)
-                        .font(.subheadline.monospacedDigit())
+        if let next {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Next Prayer")
+                        .font(.caption.weight(.semibold))
                         .foregroundStyle(Color.appTextSecondary)
-                    Text("·")
-                        .foregroundStyle(Color.appTextSecondary.opacity(0.6))
-                    Text(countdown(to: next.time))
-                        .font(.subheadline.weight(.semibold).monospacedDigit())
-                        .foregroundStyle(Color.appTextPrimary)
-                    Text("remaining")
-                        .font(.subheadline)
+                        .textCase(.uppercase)
+                        .tracking(0.5)
+                    Text(next.prayer.displayName)
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(Color.appPrimary)
+                    Text(next.time, style: .time)
+                        .font(.caption.monospacedDigit())
                         .foregroundStyle(Color.appTextSecondary)
                 }
-            } else {
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(countdown(to: next.time))
+                        .font(.title3.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(Color.appTextPrimary)
+                    Text("remaining")
+                        .font(.caption)
+                        .foregroundStyle(Color.appTextSecondary)
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity)
+            .background(Color.appBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        } else {
+            HStack(spacing: 10) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(Color.appPrimary)
                 Text("All prayers logged for today")
-                    .font(.title3.weight(.semibold))
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Color.appPrimary)
             }
+            .padding(16)
+            .frame(maxWidth: .infinity)
+            .background(Color.appBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
     }
 
